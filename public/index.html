@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>After Effect Supreme MCP</title>
+<style>
+  :root {
+    --bg:#090912; --card:rgba(255,255,255,.045); --line:rgba(255,255,255,.09); --txt:#ecebf8; --mut:#8f8fb0;
+    --ok:#3ddc97; --err:#ff5c7a; --warn:#ffb44c; --info:#5cc8ff; --violet:#8b6bff; --pink:#ff5ca8;
+    --grad:linear-gradient(90deg,#8b6bff,#ff5ca8 55%,#ffb44c);
+    color-scheme: dark;
+  }
+  * { box-sizing:border-box }
+  html,body { margin:0; height:100% }
+  body {
+    font:14px/1.45 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Inter,Roboto,sans-serif; color:var(--txt);
+    background:
+      radial-gradient(900px 500px at 8% -10%, rgba(139,107,255,.28), transparent 60%),
+      radial-gradient(800px 500px at 100% 0%, rgba(255,92,168,.18), transparent 60%),
+      radial-gradient(900px 600px at 50% 120%, rgba(92,200,255,.14), transparent 60%), var(--bg);
+    background-attachment: fixed;
+  }
+  .wrap { max-width:1400px; margin:0 auto; padding:22px 24px 40px }
+  header { display:flex; align-items:center; gap:16px; flex-wrap:wrap; margin-bottom:18px }
+  .logo { width:40px; height:40px; border-radius:12px; background:var(--grad); display:grid; place-items:center; font-weight:800; color:#fff; box-shadow:0 8px 30px rgba(255,92,168,.35) }
+  h1 { margin:0; font-size:22px; letter-spacing:-.02em }
+  h1 span { background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent }
+  .sub { color:var(--mut); font-size:12px }
+  .spacer { flex:1 }
+  .pill { display:inline-flex; align-items:center; gap:8px; padding:7px 12px; border-radius:999px; background:var(--card); border:1px solid var(--line); font-size:12.5px }
+  .dot { width:9px; height:9px; border-radius:50%; background:var(--err); box-shadow:0 0 10px var(--err) }
+  .dot.on { background:var(--ok); box-shadow:0 0 12px var(--ok) } .dot.wait { background:var(--warn); box-shadow:0 0 10px var(--warn) }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:16px; backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px) }
+  .card h2 { margin:0 0 12px; font-size:12px; text-transform:uppercase; letter-spacing:.12em; color:var(--mut); font-weight:600; display:flex; align-items:center; justify-content:space-between }
+  .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:14px }
+  .stat .v { font-size:30px; font-weight:750; letter-spacing:-.03em }
+  .stat .l { color:var(--mut); font-size:12px }
+  .stat:nth-child(1) .v { color:var(--info) } .stat:nth-child(2) .v { color:var(--err) } .stat:nth-child(3) .v { color:var(--warn) } .stat:nth-child(4) .v { color:var(--pink) }
+  .grid { display:grid; grid-template-columns:380px 1fr; gap:14px; align-items:start }
+  .col { display:flex; flex-direction:column; gap:14px; min-width:0 }
+  .ai { display:flex; gap:12px; align-items:center; padding:12px; border-radius:12px; border:1px solid var(--line); background:rgba(255,255,255,.03); margin-bottom:10px; position:relative; overflow:hidden }
+  .ai::before { content:""; position:absolute; inset:0 auto 0 0; width:3px; background:var(--c) }
+  .av { width:40px; height:40px; border-radius:12px; display:grid; place-items:center; font-weight:800; color:#0b0b14; background:var(--c); flex:none }
+  .ai .n { font-weight:650 } .ai .m { color:var(--mut); font-size:12px }
+  .ai .r { margin-left:auto; text-align:right; font-size:12px; color:var(--mut) }
+  .tag { font-size:11px; padding:2px 8px; border-radius:99px; border:1px solid var(--line); color:var(--mut) }
+  .tag.active { color:var(--ok); border-color:rgba(61,220,151,.4) } .tag.idle { color:var(--warn); border-color:rgba(255,180,76,.4) } .tag.gone { color:var(--err); border-color:rgba(255,92,122,.4) }
+  .empty { color:var(--mut); font-size:13px; padding:8px 2px }
+  .kv { display:grid; grid-template-columns:110px 1fr; gap:6px 10px; font-size:13px } .kv div:nth-child(odd) { color:var(--mut) }
+  .switch { display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-top:1px solid var(--line) }
+  .switch:first-of-type { border-top:0 } .switch small { color:var(--mut); display:block }
+  .tg { position:relative; width:42px; height:24px; border-radius:99px; background:rgba(255,255,255,.14); cursor:pointer; border:0; flex:none; transition:.2s }
+  .tg::after { content:""; position:absolute; top:3px; left:3px; width:18px; height:18px; border-radius:50%; background:#fff; transition:.2s }
+  .tg.on { background:var(--grad) } .tg.on::after { left:21px }
+  .btn { border:1px solid var(--line); background:rgba(255,255,255,.07); color:var(--txt); padding:7px 12px; border-radius:10px; cursor:pointer; font:inherit; font-size:12.5px }
+  .btn:hover { background:rgba(255,255,255,.13) } .btn.pri { background:var(--grad); border:0; color:#fff; font-weight:600 }
+  code, pre, .mono { font-family:ui-monospace,SFMono-Regular,Consolas,Menlo,monospace }
+  .snip { background:rgba(0,0,0,.35); border:1px solid var(--line); border-radius:10px; padding:10px 12px; font-size:12px; color:#cfcff0; overflow:auto; white-space:pre; margin:8px 0 0 }
+  .tools { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:12px }
+  .tools input, .tools select { background:rgba(0,0,0,.35); border:1px solid var(--line); color:var(--txt); border-radius:10px; padding:7px 10px; font:inherit; font-size:12.5px; outline:none }
+  .tools input { flex:1; min-width:140px } .tools input:focus { border-color:var(--violet) }
+  .chip { cursor:pointer; user-select:none; padding:6px 11px; border-radius:99px; border:1px solid var(--line); font-size:12px; color:var(--mut) }
+  .chip.on { color:#fff; background:rgba(139,107,255,.35); border-color:rgba(139,107,255,.7) }
+  #log { max-height:calc(100vh - 340px); min-height:360px; overflow:auto; border-radius:12px; border:1px solid var(--line); background:rgba(0,0,0,.25) }
+  .row { display:grid; grid-template-columns:78px 140px 1fr 86px 72px; gap:10px; align-items:center; padding:9px 12px; border-bottom:1px solid rgba(255,255,255,.05); cursor:pointer; font-size:13px }
+  .row:hover { background:rgba(255,255,255,.04) } .row.sys { cursor:default; color:var(--mut) }
+  .row .t { color:var(--mut); font-size:12px } .row .tool { overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+  .badge { display:inline-block; padding:2px 9px; border-radius:99px; font-size:11.5px; font-weight:600; text-align:center }
+  .b-ok { background:rgba(61,220,151,.15); color:var(--ok) } .b-error { background:rgba(255,92,122,.16); color:var(--err) }
+  .b-running { background:rgba(255,180,76,.16); color:var(--warn); animation:pulse 1s infinite } .b-info { background:rgba(92,200,255,.14); color:var(--info) } .b-warn { background:rgba(255,180,76,.14); color:var(--warn) }
+  @keyframes pulse { 50% { opacity:.45 } }
+  .cl { display:inline-flex; align-items:center; gap:7px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+  .cl i { width:8px; height:8px; border-radius:50%; background:var(--c); flex:none; box-shadow:0 0 8px var(--c) }
+  .detail { grid-column:1/-1; display:grid; grid-template-columns:1fr 1fr; gap:10px; cursor:default }
+  .detail h4 { margin:0 0 4px; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--mut) }
+  .detail pre { margin:0; max-height:300px; overflow:auto; background:rgba(0,0,0,.4); border:1px solid var(--line); border-radius:10px; padding:10px; font-size:12px; white-space:pre-wrap; word-break:break-word }
+  .toast { position:fixed; right:20px; bottom:20px; background:#15152a; border:1px solid var(--line); padding:10px 14px; border-radius:12px; opacity:0; transform:translateY(8px); transition:.25s; pointer-events:none; font-size:13px; z-index:9 }
+  .toast.show { opacity:1; transform:none }
+  @media (max-width:1000px) { .grid { grid-template-columns:1fr } .stats { grid-template-columns:repeat(2,1fr) } .detail { grid-template-columns:1fr } .row { grid-template-columns:70px 110px 1fr 70px } .row > :nth-child(5) { display:none } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo">Ae</div>
+    <div><h1>After Effect <span>Supreme MCP</span></h1><div class="sub" id="sub">connecting…</div></div>
+    <div class="spacer"></div>
+    <div class="pill"><span class="dot" id="dDaemon"></span><span id="tDaemon">Daemon</span></div>
+    <div class="pill"><span class="dot" id="dAe"></span><span id="tAe">After Effects</span></div>
+  </header>
+
+  <section class="stats">
+    <div class="card stat"><div class="v" id="sCalls">0</div><div class="l">Tool calls</div></div>
+    <div class="card stat"><div class="v" id="sErr">0</div><div class="l">Errors</div></div>
+    <div class="card stat"><div class="v" id="sAvg">–</div><div class="l">Avg latency</div></div>
+    <div class="card stat"><div class="v" id="sAis">0</div><div class="l">AIs connected</div></div>
+  </section>
+
+  <div class="grid">
+    <div class="col">
+      <div class="card"><h2>Connected AIs</h2><div id="clients"></div></div>
+      <div class="card"><h2>After Effects <button class="btn" id="btnPing">Ping</button></h2><div class="kv" id="aeKv"></div></div>
+      <div class="card"><h2>Safety</h2>
+        <div class="switch"><div>Allow raw scripts<small>Lets AIs run arbitrary ExtendScript</small></div><button class="tg" id="tgRaw"></button></div>
+        <div class="switch"><div>Read-only mode<small>Blocks every tool that changes the project</small></div><button class="tg" id="tgRO"></button></div>
+      </div>
+      <div class="card"><h2>Connect an AI</h2>
+        <div class="sub">Claude Code</div><pre class="snip mono" id="snip1"></pre>
+        <div class="sub" style="margin-top:10px">Cursor / VS Code / generic <code>mcp.json</code></div><pre class="snip mono" id="snip2"></pre>
+        <div class="sub" style="margin-top:10px">Stdio-only apps (e.g. Claude Desktop)</div><pre class="snip mono" id="snip3"></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Live log <span style="display:flex;gap:8px"><button class="btn" id="btnPause">Pause</button><a class="btn" href="/api/export" style="text-decoration:none">Export</a><button class="btn" id="btnClear">Clear</button></span></h2>
+      <div class="tools">
+        <input id="q" placeholder="Search tool, client, message, args…">
+        <select id="fClient"><option value="all">All AIs</option></select>
+        <span class="chip on" data-s="all">All</span><span class="chip" data-s="ok">OK</span><span class="chip" data-s="error">Errors</span><span class="chip" data-s="running">Running</span>
+        <span class="chip" id="cSys">System</span>
+      </div>
+      <div id="log"></div>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const S = { entries: new Map(), clients: [], ae: {}, settings: {}, stats: { calls: 0, errors: 0, totalMs: 0 }, startedAt: Date.now(), port: location.port,
+  q: '', client: 'all', status: 'all', system: false, paused: false, open: new Set(), live: false };
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const BRAND = [[/claude/i, '#ff9a6b'], [/cursor/i, '#8ec5ff'], [/code|copilot|vscode/i, '#5cc8ff'], [/codex|openai|chatgpt/i, '#3ddc97'], [/gemini/i, '#a98bff'], [/windsurf|cascade/i, '#33e0c4'], [/smoke|test|mock/i, '#ffd35c']];
+function colorOf(name = '') { for (const [re, c] of BRAND) if (re.test(name)) return c; let h = 0; for (const ch of name) h = (h * 31 + ch.charCodeAt(0)) % 360; return `hsl(${h} 85% 68%)`; }
+const fmtT = (ts) => new Date(ts).toLocaleTimeString([], { hour12: false });
+const ago = (ts) => { const s = Math.max(0, (Date.now() - ts) / 1000 | 0); return s < 60 ? s + 's ago' : s < 3600 ? (s / 60 | 0) + 'm ago' : (s / 3600 | 0) + 'h ago'; };
+const dur = (ms) => { const s = ms / 1000 | 0; return s < 60 ? s + 's' : s < 3600 ? (s / 60 | 0) + 'm ' + s % 60 + 's' : (s / 3600 | 0) + 'h ' + (s % 3600 / 60 | 0) + 'm'; };
+function toast(m) { const t = $('toast'); t.textContent = m; t.classList.add('show'); clearTimeout(toast.h); toast.h = setTimeout(() => t.classList.remove('show'), 2200); }
+
+let raf = 0; const render = () => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; draw(); }); };
+
+function draw() {
+  $('dDaemon').className = 'dot ' + (S.live ? 'on' : 'wait'); $('tDaemon').textContent = S.live ? `Daemon · up ${dur(Date.now() - S.startedAt)}` : 'Reconnecting…';
+  const ae = S.ae || {}, info = ae.info || {};
+  $('dAe').className = 'dot ' + (ae.connected ? (info.app ? 'on' : 'wait') : '');
+  $('tAe').textContent = ae.connected ? `${info.app || 'After Effects'} ${info.version || ''}${ae.latencyMs != null ? ' · ' + ae.latencyMs + 'ms' : ''}` : 'After Effects offline';
+  $('sub').textContent = `MCP endpoint http://127.0.0.1:${S.port}/mcp`;
+  $('sCalls').textContent = S.stats.calls; $('sErr').textContent = S.stats.errors;
+  $('sAvg').textContent = S.stats.calls ? Math.round(S.stats.totalMs / S.stats.calls) + 'ms' : '–';
+  const active = S.clients.filter((c) => c.connected).length; $('sAis').textContent = active;
+
+  // clients
+  $('clients').innerHTML = S.clients.length ? S.clients.map((c) => {
+    const st = !c.connected ? 'gone' : (Date.now() - c.lastSeen > 120000 ? 'idle' : 'active');
+    return `<div class="ai" style="--c:${colorOf(c.name)}"><div class="av">${esc(c.name.slice(0, 2).toUpperCase())}</div>
+      <div><div class="n">${esc(c.title || c.name)}</div><div class="m">v${esc(c.version || '?')} · ${c.sessionId.slice(0, 8)}</div></div>
+      <div class="r"><span class="tag ${st}">${st === 'gone' ? 'disconnected' : st}</span><div style="margin-top:4px">${c.calls} calls${c.errors ? ` · <span style="color:var(--err)">${c.errors} err</span>` : ''}</div><div>${ago(c.lastSeen)}</div></div></div>`;
+  }).join('') : '<div class="empty">No AI connected yet. Point an MCP client at the endpoint below.</div>';
+
+  // AE
+  const rows = ae.connected ? [['Status', info.app ? 'Ready' : 'Handshaking…'], ['Version', `${info.app || ''} ${info.version || ''}`], ['Build', info.build || '–'], ['OS', info.os || '–'],
+    ['Project', info.project ? info.project.split(/[\\/]/).pop() : 'Untitled'], ['Latency', ae.latencyMs != null ? ae.latencyMs + ' ms' : '–'], ['Linked', ae.since ? ago(ae.since) : '–']] : [['Status', 'Not connected'], ['Fix', 'Window → Extensions → After Effect Supreme MCP']];
+  $('aeKv').innerHTML = rows.map(([k, v]) => `<div>${k}</div><div>${esc(v)}</div>`).join('');
+  $('tgRaw').classList.toggle('on', !!S.settings.allowRawScripts); $('tgRO').classList.toggle('on', !!S.settings.readOnly);
+
+  // client filter options
+  const sel = $('fClient'), names = [...new Set([...S.entries.values()].map((e) => e.client).filter(Boolean))];
+  if (names.join('|') !== sel.dataset.n) { sel.dataset.n = names.join('|'); sel.innerHTML = '<option value="all">All AIs</option>' + names.map((n) => `<option ${n === S.client ? 'selected' : ''}>${esc(n)}</option>`).join(''); }
+
+  // log
+  const q = S.q.toLowerCase();
+  const list = [...S.entries.values()].filter((e) => {
+    if (e.kind !== 'tool' && !S.system) return false;
+    if (S.client !== 'all' && e.client !== S.client) return false;
+    if (S.status !== 'all' && e.status !== S.status) return false;
+    if (q && !(`${e.tool || ''} ${e.client || ''} ${e.message} ${JSON.stringify(e.args || '')} ${e.error || ''}`.toLowerCase().includes(q))) return false;
+    return true;
+  }).slice(-400).reverse();
+  const box = $('log'), keep = box.scrollTop;
+  box.innerHTML = list.length ? list.map(rowHtml).join('') : '<div class="empty" style="padding:20px">Nothing here yet. Tool calls from connected AIs will stream in live.</div>';
+  box.scrollTop = S.paused ? keep : 0;
+}
+
+function rowHtml(e) {
+  const isTool = e.kind === 'tool', c = colorOf(e.client || '');
+  const badge = isTool ? `<span class="badge b-${e.status}">${e.status}</span>` : `<span class="badge b-${e.level === 'error' ? 'error' : e.level === 'warn' ? 'warn' : 'info'}">${e.kind}</span>`;
+  const open = S.open.has(e.id) && isTool;
+  let h = `<div class="row ${isTool ? '' : 'sys'}" data-id="${e.id}"><span class="t mono">${fmtT(e.ts)}</span>
+    <span class="cl" style="--c:${c}">${e.client ? `<i></i>${esc(e.client)}` : '<span style="color:var(--mut)">daemon</span>'}</span>
+    <span class="tool mono">${isTool ? esc(e.tool) : esc(e.message)}</span>${badge}<span class="t">${e.durationMs != null ? e.durationMs + 'ms' : ''}</span>`;
+  if (open) h += `<div class="detail"><div><h4>Arguments</h4><pre>${esc(JSON.stringify(e.args ?? {}, null, 2))}</pre></div><div><h4>${e.error ? 'Error' : 'Result'}</h4><pre>${esc(e.error || JSON.stringify(e.result ?? null, null, 2))}</pre></div></div>`;
+  return h + '</div>';
+}
+
+// ---- events ----
+$('log').addEventListener('click', (ev) => { if (ev.target.closest('.detail')) return; const r = ev.target.closest('.row'); if (!r || r.classList.contains('sys')) return; const id = +r.dataset.id; S.open.has(id) ? S.open.delete(id) : S.open.add(id); render(); });
+$('q').oninput = (e) => { S.q = e.target.value; render(); };
+$('fClient').onchange = (e) => { S.client = e.target.value; render(); };
+document.querySelectorAll('.chip[data-s]').forEach((c) => c.onclick = () => { S.status = c.dataset.s; document.querySelectorAll('.chip[data-s]').forEach((x) => x.classList.toggle('on', x === c)); render(); });
+$('cSys').onclick = (e) => { S.system = !S.system; e.target.classList.toggle('on', S.system); render(); };
+$('btnPause').onclick = (e) => { S.paused = !S.paused; e.target.textContent = S.paused ? 'Resume' : 'Pause'; };
+$('btnClear').onclick = () => fetch('/api/clear', { method: 'POST' });
+const post = (u, b) => fetch(u, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(b || {}) }).then((r) => r.json());
+$('tgRaw').onclick = () => post('/api/settings', { allowRawScripts: !S.settings.allowRawScripts });
+$('tgRO').onclick = () => post('/api/settings', { readOnly: !S.settings.readOnly });
+$('btnPing').onclick = async () => { const r = await post('/api/ping-ae'); toast(r.ok ? `After Effects replied in ${r.ms}ms` : `Ping failed: ${r.error}`); };
+const url = `http://127.0.0.1:${location.port}/mcp`;
+$('snip1').textContent = `claude mcp add --transport http after-effects ${url}`;
+$('snip2').textContent = JSON.stringify({ mcpServers: { 'after-effects': { url } } }, null, 2);
+$('snip3').textContent = JSON.stringify({ mcpServers: { 'after-effects': { command: 'npx', args: ['-y', 'mcp-remote', url] } } }, null, 2);
+
+// ---- live socket ----
+function connect() {
+  const ws = new WebSocket(`${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}/ui`);
+  ws.onopen = () => { S.live = true; render(); };
+  ws.onclose = () => { S.live = false; render(); setTimeout(connect, 1200); };
+  ws.onmessage = (ev) => {
+    const m = JSON.parse(ev.data);
+    if (m.type === 'snapshot') { Object.assign(S, { clients: m.clients, ae: m.ae, settings: m.settings, stats: m.stats, startedAt: m.startedAt, port: m.port }); S.entries = new Map(m.entries.map((e) => [e.id, e])); }
+    else if (m.type === 'entry') { S.entries.set(m.entry.id, m.entry); if (S.entries.size > 2000) S.entries.delete(S.entries.keys().next().value); }
+    else if (m.type === 'update') { const e = S.entries.get(m.id); if (e) Object.assign(e, m.patch); }
+    else if (m.type === 'clients') S.clients = m.clients;
+    else if (m.type === 'ae') S.ae = m.ae;
+    else if (m.type === 'settings') S.settings = m.settings;
+    else if (m.type === 'stats') S.stats = m.stats;
+    render();
+  };
+}
+connect(); setInterval(render, 1000);
+</script>
+</body>
+</html>

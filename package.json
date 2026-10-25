@@ -1,24 +1,26 @@
 {
-  "name": "after-effects-mcp",
-  "version": "1.0.0",
-  "description": "MCP server for Adobe After Effects",
-  "main": "build/index.js",
+  "name": "ae-supreme-mcp",
+  "version": "0.1.0",
+  "description": "After Effects MCP: WebSocket bridge, live dashboard, raw ExtendScript + structured tools",
   "type": "module",
   "scripts": {
-    "build": "esbuild src/index.ts --bundle --platform=node --format=esm --outfile=build/index.js --packages=external && copyfiles -u 1 \"src/scripts/**/*\" build",
-    "start": "node build/index.js",
-    "install-bridge": "node install-bridge.js",
-    "postinstall": "npm run build"
+    "build": "esbuild src/daemon.ts --bundle --platform=node --format=esm --outfile=build/daemon.js --packages=external",
+    "start": "node build/daemon.js",
+    "typecheck": "tsc --noEmit",
+    "install-panel": "node scripts/install-panel.mjs",
+    "uninstall-panel": "node scripts/install-panel.mjs --uninstall",
+    "mock-ae": "node scripts/mock-ae.mjs",
+    "smoke": "node scripts/smoke-test.mjs"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.28.0",
-    "node-fetch": "^3.3.2",
-    "zod": "^3.22.2"
+    "@modelcontextprotocol/sdk": "^1.20.0",
+    "ws": "^8.18.0",
+    "zod": "^3.25.0"
   },
   "devDependencies": {
     "@types/node": "^20.17.30",
-    "copyfiles": "^2.4.1",
-    "esbuild": "^0.27.4",
-    "typescript": "^5.2.2"
+    "@types/ws": "^8.5.12",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.6.0"
   }
 }

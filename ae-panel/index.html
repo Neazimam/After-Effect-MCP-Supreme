@@ -1,0 +1,27 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>After Effect Supreme MCP</title>
+<style>
+  :root{color-scheme:dark}
+  *{box-sizing:border-box}
+  body{margin:0;padding:14px;font:12px/1.4 system-ui,Segoe UI,Helvetica,sans-serif;color:#e9e9f5;
+    background:radial-gradient(500px 280px at 0% 0%,#3b1d7a55,transparent),radial-gradient(400px 260px at 100% 100%,#0e5a7a55,transparent),#0d0d18;min-height:100vh}
+  h1{margin:0 0 10px;font-size:15px;background:linear-gradient(90deg,#8b6bff,#ff5ca8,#ffb44c);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .card{background:#ffffff0d;border:1px solid #ffffff18;border-radius:12px;padding:10px 12px;margin-bottom:10px}
+  .row{display:flex;align-items:center;gap:8px}
+  .dot{width:10px;height:10px;border-radius:50%;background:#ff5c7a;box-shadow:0 0 10px #ff5c7a}
+  .dot.on{background:#3ddc97;box-shadow:0 0 12px #3ddc97}.dot.wait{background:#ffb44c;box-shadow:0 0 10px #ffb44c}
+  .big{font-size:13px;font-weight:600}.mut{color:#9a9ab8}
+  input{width:100%;background:#0006;border:1px solid #ffffff22;border-radius:8px;color:#fff;padding:6px 8px;font:inherit}
+  button{background:linear-gradient(90deg,#7c5cff,#ff5ca8);border:0;color:#fff;padding:6px 12px;border-radius:8px;font:inherit;font-weight:600;cursor:pointer}
+  button.ghost{background:#ffffff14}
+  #log{max-height:90px;overflow:auto;font:11px ui-monospace,Consolas,monospace;color:#b9b9d6}
+</style></head>
+<body>
+  <h1>After Effect Supreme MCP</h1>
+  <div class="card"><div class="row"><span id="dot" class="dot"></span><span id="state" class="big">Disconnected</span></div>
+    <div id="sub" class="mut" style="margin-top:4px">Starting…</div></div>
+  <div class="card"><div class="mut" style="margin-bottom:4px">Daemon bridge URL</div>
+    <input id="url"><div class="row" style="margin-top:8px"><button id="save">Reconnect</button><button id="open" class="ghost">Open dashboard</button></div></div>
+  <div class="card"><div class="mut">Commands handled: <b id="count">0</b></div><div id="log"></div></div>
+  <script src="main.js"></script>
+</body></html>
