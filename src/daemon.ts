@@ -79,6 +79,11 @@ const server = http.createServer(async (req, res) => {
       return res.end(JSON.stringify(hub.entries, null, 2));
     }
     if (req.method === 'POST' && url.pathname === '/api/settings') { hub.setSettings((await readBody(req)) || {}); return json(res, 200, hub.settings); }
+    if (req.method === 'POST' && url.pathname === '/api/shutdown') {  // used by the installer to stop the hidden daemon cleanly
+      hub.log({ kind: 'system', level: 'warn', message: 'Shutdown requested' });
+      json(res, 200, { ok: true });
+      return void setTimeout(() => process.exit(0), 150);
+    }
     if (req.method === 'POST' && url.pathname === '/api/clear') { hub.clearLogs(); return json(res, 200, { ok: true }); }
     if (req.method === 'POST' && url.pathname === '/api/ping-ae') {
       const t0 = Date.now();
