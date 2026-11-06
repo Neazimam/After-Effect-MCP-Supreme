@@ -1,0 +1,950 @@
+{
+  "source": "nebula-player-test.html",
+  "comp": {
+    "width": 1920,
+    "height": 1080,
+    "frameRate": 30,
+    "duration": 10,
+    "bgColor": [
+      11,
+      14,
+      26
+    ]
+  },
+  "totals": {
+    "layers": 54,
+    "keyframes": 162,
+    "warnings": 0
+  },
+  "warnings": [],
+  "layers": [
+    {
+      "index": 1,
+      "name": "bg-base",
+      "kind": "shape",
+      "pos": [
+        0,
+        0
+      ],
+      "size": [
+        1920,
+        1080
+      ],
+      "opacity": 100,
+      "gradient": "linear",
+      "keyframes": {}
+    },
+    {
+      "index": 2,
+      "name": "glow-violet",
+      "kind": "shape",
+      "pos": [
+        665,
+        245
+      ],
+      "size": [
+        950,
+        950
+      ],
+      "opacity": 100,
+      "gradient": "radial",
+      "keyframes": {}
+    },
+    {
+      "index": 3,
+      "name": "glow-cyan",
+      "kind": "shape",
+      "pos": [
+        -760,
+        -380
+      ],
+      "size": [
+        800,
+        800
+      ],
+      "opacity": 100,
+      "gradient": "radial",
+      "keyframes": {}
+    },
+    {
+      "index": 4,
+      "name": "orb",
+      "kind": "shape",
+      "pos": [
+        600,
+        470
+      ],
+      "size": [
+        260,
+        260
+      ],
+      "opacity": 100,
+      "gradient": "radial",
+      "keyframes": {
+        "Position": 3
+      }
+    },
+    {
+      "index": 5,
+      "name": "orb-2",
+      "kind": "shape",
+      "pos": [
+        -220,
+        -440
+      ],
+      "size": [
+        200,
+        200
+      ],
+      "opacity": 100,
+      "gradient": "radial",
+      "keyframes": {
+        "Position": 2
+      }
+    },
+    {
+      "index": 6,
+      "name": "card",
+      "kind": "shape",
+      "pos": [
+        -540,
+        -10
+      ],
+      "size": [
+        560,
+        800
+      ],
+      "opacity": 100,
+      "roundness": 32,
+      "stroke": "#ffffff",
+      "strokeWidth": 1,
+      "keyframes": {
+        "Scale": 2,
+        "Opacity": 2
+      }
+    },
+    {
+      "index": 7,
+      "name": "album",
+      "kind": "shape",
+      "pos": [
+        -540,
+        110
+      ],
+      "size": [
+        420,
+        420
+      ],
+      "opacity": 100,
+      "gradient": "linear",
+      "roundness": 28,
+      "shadow": true,
+      "keyframes": {
+        "Scale": 2,
+        "Opacity": 2
+      }
+    },
+    {
+      "index": 8,
+      "name": "orbit",
+      "kind": "shape",
+      "pos": [
+        -345,
+        305
+      ],
+      "size": [
+        110,
+        110
+      ],
+      "opacity": 100,
+      "gradient": "linear",
+      "roundness": 24,
+      "shadow": true,
+      "keyframes": {
+        "Rotation": 2
+      }
+    },
+    {
+      "index": 9,
+      "name": "NEBULA",
+      "kind": "text",
+      "pos": [
+        -540,
+        -157.6
+      ],
+      "size": [
+        420,
+        67.2
+      ],
+      "opacity": 100,
+      "text": "NEBULA",
+      "keyframes": {
+        "Position": 2,
+        "Opacity": 2
+      }
+    },
+    {
+      "index": 10,
+      "name": "Midnight Drive - 04:12",
+      "kind": "text",
+      "pos": [
+        -540,
+        -216.8
+      ],
+      "size": [
+        420,
+        33.6
+      ],
+      "opacity": 100,
+      "text": "Midnight Drive - 04:12",
+      "keyframes": {
+        "Position": 2,
+        "Opacity": 2
+      }
+    },
+    {
+      "index": 11,
+      "name": "track",
+      "kind": "shape",
+      "pos": [
+        -750,
+        -271
+      ],
+      "size": [
+        420,
+        10
+      ],
+      "opacity": 100,
+      "keyframes": {
+        "Scale": 2
+      }
+    },
+    {
+      "index": 12,
+      "name": "progress",
+      "kind": "shape",
+      "pos": [
+        -750,
+        -271
+      ],
+      "size": [
+        420,
+        10
+      ],
+      "opacity": 100,
+      "gradient": "linear",
+      "keyframes": {
+        "Scale": 5
+      }
+    },
+    {
+      "index": 13,
+      "name": "knob",
+      "kind": "shape",
+      "pos": [
+        -750,
+        -271
+      ],
+      "size": [
+        22,
+        22
+      ],
+      "opacity": 100,
+      "shadow": true,
+      "keyframes": {
+        "Position": 5
+      }
+    },
+    {
+      "index": 14,
+      "name": "01:24",
+      "kind": "text",
+      "pos": [
+        -750,
+        -298
+      ],
+      "size": [
+        200,
+        24
+      ],
+      "opacity": 100,
+      "text": "01:24",
+      "keyframes": {}
+    },
+    {
+      "index": 15,
+      "name": "-02:48",
+      "kind": "text",
+      "pos": [
+        -330,
+        -298
+      ],
+      "size": [
+        200,
+        24
+      ],
+      "opacity": 100,
+      "text": "-02:48",
+      "keyframes": {}
+    },
+    {
+      "index": 16,
+      "name": "btn-prev",
+      "kind": "shape",
+      "pos": [
+        -692,
+        -364
+      ],
+      "size": [
+        64,
+        64
+      ],
+      "opacity": 100,
+      "keyframes": {
+        "Scale": 2,
+        "Opacity": 2
+      }
+    },
+    {
+      "index": 17,
+      "name": "prev-a",
+      "kind": "shape",
+      "pos": [
+        -695,
+        -364
+      ],
+      "size": [
+        6,
+        18
+      ],
+      "opacity": 100,
+      "keyframes": {}
+    },
+    {
+      "index": 18,
+      "name": "prev-b",
+      "kind": "shape",
+      "pos": [
+        -683,
+        -364
+      ],
+      "size": [
+        6,
+        18
+      ],
+      "opacity": 100,
+      "keyframes": {}
+    },
+    {
+      "index": 19,
+      "name": "play",
+      "kind": "shape",
+      "pos": [
+        -592,
+        -348
+      ],
+      "size": [
+        84,
+        84
+      ],
+      "opacity": 100,
+      "gradient": "linear",
+      "shadow": true,
+      "keyframes": {
+        "Scale": 17
+      }
+    },
+    {
+      "index": 20,
+      "name": "pause-a",
+      "kind": "solid",
+      "pos": [
+        -601,
+        -348
+      ],
+      "size": [
+        10,
+        36
+      ],
+      "opacity": 100,
+      "roundness": 4,
+      "keyframes": {}
+    },
+    {
+      "index": 21,
+      "name": "pause-b",
+      "kind": "solid",
+      "pos": [
+        -583,
+        -348
+      ],
+      "size": [
+        10,
+        36
+      ],
+      "opacity": 100,
+      "roundness": 4,
+      "keyframes": {}
+    },
+    {
+      "index": 22,
+      "name": "btn-next",
+      "kind": "shape",
+      "pos": [
+        -492,
+        -364
+      ],
+      "size": [
+        64,
+        64
+      ],
+      "opacity": 100,
+      "keyframes": {
+        "Scale": 2,
+        "Opacity": 2
+      }
+    },
+    {
+      "index": 23,
+      "name": "next-a",
+      "kind": "shape",
+      "pos": [
+        -499,
+        -364
+      ],
+      "size": [
+        6,
+        18
+      ],
+      "opacity": 100,
+      "keyframes": {}
+    },
+    {
+      "index": 24,
+      "name": "next-b",
+      "kind": "shape",
+      "pos": [
+        -487,
+        -364
+      ],
+      "size": [
+        6,
+        18
+      ],
+      "opacity": 100,
+      "keyframes": {}
+    },
+    {
+      "index": 25,
+      "name": "queue",
+      "kind": "shape",
+      "pos": [
+        310,
+        -10
+      ],
+      "size": [
+        1020,
+        800
+      ],
+      "opacity": 100,
+      "roundness": 32,
+      "stroke": "#ffffff",
+      "strokeWidth": 1,
+      "keyframes": {
+        "Scale": 2,
+        "Opacity": 2
+      }
+    },
+    {
+      "index": 26,
+      "name": "UP NEXT",
+      "kind": "text",
+      "pos": [
+        -140,
+        314.4
+      ],
+      "size": [
+        400,
+        31.2
+      ],
+      "opacity": 100,
+      "text": "UP NEXT",
+      "keyframes": {
+        "Position": 2,
+        "Opacity": 2
+      }
+    },
+    {
+      "index": 27,
+      "name": "badge",
+      "kind": "shape",
+      "pos": [
+        770,
+        317
+      ],
+      "size": [
+        80,
+        34
+      ],
+      "opacity": 100,
+      "keyframes": {
+        "Opacity": 11
+      }
+    },
+    {
+      "index": 28,
+      "name": "LIVE",
+      "kind": "text",
+      "pos": [
+        770,
+        317
+      ],
+      "size": [
+        80,
+        34
+      ],
+      "opacity": 100,
+      "text": "LIVE",
+      "keyframes": {
+        "Opacity": 11
+      }
+    },
+    {
+      "index": 29,
+      "name": "eq-1",
+      "kind": "solid",
+      "pos": [
+        585,
+        300
+      ],
+      "size": [
+        10,
+        36
+      ],
+      "opacity": 100,
+      "roundness": 3,
+      "keyframes": {
+        "Scale": 12
+      }
+    },
+    {
+      "index": 30,
+      "name": "eq-2",
+      "kind": "solid",
+      "pos": [
+        605,
+        300
+      ],
+      "size": [
+        10,
+        36
+      ],
+      "opacity": 100,
+      "roundness": 3,
+      "keyframes": {
+        "Scale": 11
+      }
+    },
+    {
+      "index": 31,
+      "name": "eq-3",
+      "kind": "solid",
+      "pos": [
+        625,
+        300
+      ],
+      "size": [
+        10,
+        36
+      ],
+      "opacity": 100,
+      "roundness": 3,
+      "keyframes": {
+        "Scale": 11
+      }
+    },
+    {
+      "index": 32,
+      "name": "eq-4",
+      "kind": "solid",
+      "pos": [
+        645,
+        300
+      ],
+      "size": [
+        10,
+        36
+      ],
+      "opacity": 100,
+      "roundness": 3,
+      "keyframes": {
+        "Scale": 11
+      }
+    },
+    {
+      "index": 33,
+      "name": "eq-5",
+      "kind": "solid",
+      "pos": [
+        665,
+        300
+      ],
+      "size": [
+        10,
+        36
+      ],
+      "opacity": 100,
+      "roundness": 3,
+      "keyframes": {
+        "Scale": 11
+      }
+    },
+    {
+      "index": 34,
+      "name": "row-1",
+      "kind": "shape",
+      "pos": [
+        310,
+        206
+      ],
+      "size": [
+        900,
+        88
+      ],
+      "opacity": 100,
+      "roundness": 20,
+      "stroke": "#7c4dff",
+      "strokeWidth": 1,
+      "keyframes": {
+        "Position": 2,
+        "Opacity": 2
+      }
+    },
+    {
+      "index": 35,
+      "name": "av-1",
+      "kind": "shape",
+      "pos": [
+        -96,
+        206
+      ],
+      "size": [
+        56,
+        56
+      ],
+      "opacity": 100,
+      "gradient": "linear",
+      "keyframes": {}
+    },
+    {
+      "index": 36,
+      "name": "Neon Skyline",
+      "kind": "text",
+      "pos": [
+        -44,
+        218.8
+      ],
+      "size": [
+        560,
+        26.4
+      ],
+      "opacity": 100,
+      "text": "Neon Skyline",
+      "keyframes": {}
+    },
+    {
+      "index": 37,
+      "name": "Vaporwave Dreams",
+      "kind": "text",
+      "pos": [
+        -44,
+        189.2
+      ],
+      "size": [
+        560,
+        21.6
+      ],
+      "opacity": 100,
+      "text": "Vaporwave Dreams",
+      "keyframes": {}
+    },
+    {
+      "index": 38,
+      "name": "3:56",
+      "kind": "text",
+      "pos": [
+        740,
+        206.2
+      ],
+      "size": [
+        100,
+        21.6
+      ],
+      "opacity": 100,
+      "text": "3:56",
+      "keyframes": {}
+    },
+    {
+      "index": 39,
+      "name": "row-2",
+      "kind": "solid",
+      "pos": [
+        310,
+        96
+      ],
+      "size": [
+        900,
+        88
+      ],
+      "opacity": 100,
+      "roundness": 20,
+      "keyframes": {
+        "Position": 2,
+        "Opacity": 2
+      }
+    },
+    {
+      "index": 40,
+      "name": "av-2",
+      "kind": "shape",
+      "pos": [
+        -96,
+        96
+      ],
+      "size": [
+        56,
+        56
+      ],
+      "opacity": 100,
+      "keyframes": {}
+    },
+    {
+      "index": 41,
+      "name": "Chrome Hearts",
+      "kind": "text",
+      "pos": [
+        -44,
+        108.8
+      ],
+      "size": [
+        560,
+        26.4
+      ],
+      "opacity": 100,
+      "text": "Chrome Hearts",
+      "keyframes": {}
+    },
+    {
+      "index": 42,
+      "name": "Synth Rider",
+      "kind": "text",
+      "pos": [
+        -44,
+        79.2
+      ],
+      "size": [
+        560,
+        21.6
+      ],
+      "opacity": 100,
+      "text": "Synth Rider",
+      "keyframes": {}
+    },
+    {
+      "index": 43,
+      "name": "4:21",
+      "kind": "text",
+      "pos": [
+        740,
+        96.2
+      ],
+      "size": [
+        100,
+        21.6
+      ],
+      "opacity": 100,
+      "text": "4:21",
+      "keyframes": {}
+    },
+    {
+      "index": 44,
+      "name": "row-3",
+      "kind": "solid",
+      "pos": [
+        310,
+        -14
+      ],
+      "size": [
+        900,
+        88
+      ],
+      "opacity": 100,
+      "roundness": 20,
+      "keyframes": {
+        "Position": 2,
+        "Opacity": 2
+      }
+    },
+    {
+      "index": 45,
+      "name": "av-3",
+      "kind": "shape",
+      "pos": [
+        -96,
+        -14
+      ],
+      "size": [
+        56,
+        56
+      ],
+      "opacity": 100,
+      "keyframes": {}
+    },
+    {
+      "index": 46,
+      "name": "Afterglow",
+      "kind": "text",
+      "pos": [
+        -44,
+        -1.2
+      ],
+      "size": [
+        560,
+        26.4
+      ],
+      "opacity": 100,
+      "text": "Afterglow",
+      "keyframes": {}
+    },
+    {
+      "index": 47,
+      "name": "Lunar Wave",
+      "kind": "text",
+      "pos": [
+        -44,
+        -30.8
+      ],
+      "size": [
+        560,
+        21.6
+      ],
+      "opacity": 100,
+      "text": "Lunar Wave",
+      "keyframes": {}
+    },
+    {
+      "index": 48,
+      "name": "3:12",
+      "kind": "text",
+      "pos": [
+        740,
+        -13.8
+      ],
+      "size": [
+        100,
+        21.6
+      ],
+      "opacity": 100,
+      "text": "3:12",
+      "keyframes": {}
+    },
+    {
+      "index": 49,
+      "name": "row-4",
+      "kind": "solid",
+      "pos": [
+        310,
+        -124
+      ],
+      "size": [
+        900,
+        88
+      ],
+      "opacity": 100,
+      "roundness": 20,
+      "keyframes": {
+        "Position": 2,
+        "Opacity": 2
+      }
+    },
+    {
+      "index": 50,
+      "name": "av-4",
+      "kind": "shape",
+      "pos": [
+        -96,
+        -124
+      ],
+      "size": [
+        56,
+        56
+      ],
+      "opacity": 100,
+      "keyframes": {}
+    },
+    {
+      "index": 51,
+      "name": "Starlight Cruise",
+      "kind": "text",
+      "pos": [
+        -44,
+        -111.2
+      ],
+      "size": [
+        560,
+        26.4
+      ],
+      "opacity": 100,
+      "text": "Starlight Cruise",
+      "keyframes": {}
+    },
+    {
+      "index": 52,
+      "name": "Night Drive FM",
+      "kind": "text",
+      "pos": [
+        -44,
+        -140.8
+      ],
+      "size": [
+        560,
+        21.6
+      ],
+      "opacity": 100,
+      "text": "Night Drive FM",
+      "keyframes": {}
+    },
+    {
+      "index": 53,
+      "name": "5:02",
+      "kind": "text",
+      "pos": [
+        740,
+        -123.8
+      ],
+      "size": [
+        100,
+        21.6
+      ],
+      "opacity": 100,
+      "text": "5:02",
+      "keyframes": {}
+    },
+    {
+      "index": 54,
+      "name": "html2ae fidelity test - 1920x1",
+      "kind": "text",
+      "pos": [
+        -820,
+        -454.8
+      ],
+      "size": [
+        900,
+        21.6
+      ],
+      "opacity": 100,
+      "text": "html2ae fidelity test - 1920x1080 - 30 fps - 10 s",
+      "keyframes": {}
+    }
+  ]
+}

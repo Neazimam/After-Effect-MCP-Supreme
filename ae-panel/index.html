@@ -1,27 +1,99 @@
-<!doctype html>
-<html><head><meta charset="utf-8"><title>After Effect Supreme MCP</title>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
 <style>
-  :root{color-scheme:dark}
-  *{box-sizing:border-box}
-  body{margin:0;padding:14px;font:12px/1.4 system-ui,Segoe UI,Helvetica,sans-serif;color:#e9e9f5;
-    background:radial-gradient(500px 280px at 0% 0%,#3b1d7a55,transparent),radial-gradient(400px 260px at 100% 100%,#0e5a7a55,transparent),#0d0d18;min-height:100vh}
-  h1{margin:0 0 10px;font-size:15px;background:linear-gradient(90deg,#8b6bff,#ff5ca8,#ffb44c);-webkit-background-clip:text;background-clip:text;color:transparent}
-  .card{background:#ffffff0d;border:1px solid #ffffff18;border-radius:12px;padding:10px 12px;margin-bottom:10px}
-  .row{display:flex;align-items:center;gap:8px}
-  .dot{width:10px;height:10px;border-radius:50%;background:#ff5c7a;box-shadow:0 0 10px #ff5c7a}
-  .dot.on{background:#3ddc97;box-shadow:0 0 12px #3ddc97}.dot.wait{background:#ffb44c;box-shadow:0 0 10px #ffb44c}
-  .big{font-size:13px;font-weight:600}.mut{color:#9a9ab8}
-  input{width:100%;background:#0006;border:1px solid #ffffff22;border-radius:8px;color:#fff;padding:6px 8px;font:inherit}
-  button{background:linear-gradient(90deg,#7c5cff,#ff5ca8);border:0;color:#fff;padding:6px 12px;border-radius:8px;font:inherit;font-weight:600;cursor:pointer}
-  button.ghost{background:#ffffff14}
-  #log{max-height:90px;overflow:auto;font:11px ui-monospace,Consolas,monospace;color:#b9b9d6}
-</style></head>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font: 12px/1.45 "Segoe UI", Arial, sans-serif; background: #16181d; color: #cfd3dc; overflow: hidden; }
+  .tabs { display: flex; background: #0f1115; border-bottom: 1px solid #262a33; }
+  .tab { flex: 1; padding: 9px 4px; background: none; border: none; border-bottom: 2px solid transparent; color: #7d838f; font: 600 12px "Segoe UI", Arial, sans-serif; cursor: pointer; letter-spacing: .3px; }
+  .tab:hover { color: #aeb4c0; }
+  .tab.active { color: #4f9cf9; border-bottom-color: #4f9cf9; }
+  .page { display: none; padding: 10px; }
+  .page.active { display: block; }
+  .row { display: flex; gap: 6px; align-items: center; margin-bottom: 8px; }
+  .row label { color: #7d838f; white-space: nowrap; }
+  input[type=text], input[type=number], textarea {
+    background: #0f1115; border: 1px solid #2a2f3a; color: #d7dbe3; border-radius: 4px; padding: 5px 7px; font: 12px/1.4 Consolas, monospace; width: 100%;
+  }
+  input[type=text] { font-family: "Segoe UI", Arial, sans-serif; }
+  textarea { resize: vertical; min-height: 96px; }
+  input:focus, textarea:focus { outline: none; border-color: #4f9cf9; }
+  button { background: #2b62d9; border: none; color: #fff; border-radius: 4px; padding: 6px 12px; font: 600 12px "Segoe UI", Arial, sans-serif; cursor: pointer; white-space: nowrap; }
+  button:hover { background: #3b74ea; }
+  button:disabled { background: #2a2f3a; color: #6a707c; cursor: default; }
+  button.ghost { background: #232833; color: #aab1bf; }
+  button.ghost:hover { background: #2d3340; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: #5a2b2b; display: inline-block; margin-right: 6px; flex: none; }
+  .dot.wait { background: #b3862d; }
+  .dot.on { background: #37b24d; box-shadow: 0 0 6px rgba(55,178,77,.7); }
+  #state { font-weight: 600; }
+  #sub { color: #7d838f; font-size: 11px; margin-left: auto; text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  #log { height: 148px; overflow-y: auto; background: #0f1115; border: 1px solid #2a2f3a; border-radius: 4px; padding: 6px 8px; font: 11px/1.5 Consolas, monospace; color: #9aa1ad; }
+  #htmlLog { height: 92px; overflow-y: auto; background: #0f1115; border: 1px solid #2a2f3a; border-radius: 4px; padding: 6px 8px; font: 11px/1.5 Consolas, monospace; color: #9aa1ad; margin-top: 8px; }
+  #log div.ok, #htmlLog div.ok { color: #58c97b; }
+  #log div.err, #htmlLog div.err { color: #ef5e68; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 6px; margin-bottom: 8px; }
+  .grid label { display: block; color: #7d838f; font-size: 10px; margin-bottom: 2px; text-transform: uppercase; letter-spacing: .4px; }
+  .chk { display: flex; align-items: center; gap: 6px; color: #9aa1ad; font-size: 11px; }
+  .chk input { accent-color: #2b62d9; }
+  canvas { background: #0b0c0f; border: 1px solid #2a2f3a; border-radius: 4px; width: 100%; height: 210px; display: block; }
+  .muted { color: #6a707c; font-size: 11px; }
+  .hint { color: #5d6470; font-size: 10.5px; margin-top: 6px; line-height: 1.5; }
+  a { color: #4f9cf9; text-decoration: none; }
+</style>
+</head>
 <body>
-  <h1>After Effect Supreme MCP</h1>
-  <div class="card"><div class="row"><span id="dot" class="dot"></span><span id="state" class="big">Disconnected</span></div>
-    <div id="sub" class="mut" style="margin-top:4px">Starting…</div></div>
-  <div class="card"><div class="mut" style="margin-bottom:4px">Daemon bridge URL</div>
-    <input id="url"><div class="row" style="margin-top:8px"><button id="save">Reconnect</button><button id="open" class="ghost">Open dashboard</button></div></div>
-  <div class="card"><div class="mut">Commands handled: <b id="count">0</b></div><div id="log"></div></div>
+  <div class="tabs">
+    <button class="tab active" data-tab="bridge">Bridge</button>
+    <button class="tab" data-tab="html">HTML → AE</button>
+    <button class="tab" data-tab="preview">Preview</button>
+  </div>
+
+  <div id="tab-bridge" class="page active">
+    <div class="row"><span class="dot" id="dot"></span><span id="state">Connecting…</span><span id="sub"></span></div>
+    <div class="row"><input type="text" id="url" spellcheck="false"></div>
+    <div class="row">
+      <button id="save">Reconnect</button>
+      <button id="open" class="ghost">Open Dashboard</button>
+      <span class="muted" style="margin-left:auto">handled <b id="count">0</b></span>
+    </div>
+    <div id="log"></div>
+    <div class="muted" id="ver" style="margin:6px 0 4px">After Effect Supreme MCP panel</div>
+    <div class="hint">The bridge relays MCP tool calls into After Effects via one undo group per call.<br>Token auth: the panel reads <span style="font-family:Consolas,monospace">~/.ae-supreme-mcp/daemon-token</span> automatically.</div>
+  </div>
+
+  <div id="tab-html" class="page">
+    <textarea id="html" spellcheck="false" placeholder="<style>&#10;  .title { position:absolute; left:560px; top:420px; font:700 90px Arial; color:#fff; animation:pop 2s ease-out infinite }&#10;  @keyframes pop { 0% { transform:scale(.4); opacity:0 } 100% { transform:scale(1); opacity:1 } }&#10;</style>&#10;<div class='title'>HELLO</div>"></textarea>
+    <div class="grid" style="margin-top:8px">
+      <div style="grid-column:span 2"><label>Comp name</label><input type="text" id="compName" value="HTML Motion"></div>
+      <div><label>Width</label><input type="number" id="cw" value="1920"></div>
+      <div><label>Height</label><input type="number" id="ch" value="1080"></div>
+      <div><label>FPS</label><input type="number" id="fps" value="30"></div>
+      <div><label>Seconds</label><input type="number" id="dur" value="10"></div>
+      <div class="chk" style="grid-column:span 2; align-self:end"><input type="checkbox" id="intoCur"><span>Into current comp</span></div>
+    </div>
+    <div class="row">
+      <button id="importBtn" class="ghost">Import file…</button>
+      <input type="file" id="fileIn" accept=".html,.htm,text/html" style="display:none">
+      <button id="planBtn" class="ghost">Plan</button>
+      <button id="applyBtn">Convert → AE</button>
+      <span class="muted" style="margin-left:auto" id="htmlStatus"></span>
+    </div>
+    <div id="htmlLog"></div>
+    <div class="hint">Import a .html file or paste AI-generated HTML+CSS motion graphics. Every element becomes a real layer; @keyframes become real keyframes (translate→Position, scale→Scale, rotate→Rotation, opacity→Opacity, colors→Fill). box-shadow→Drop Shadow, gradients→Ramp (radial supported). HyperFrames-style <span style="font-family:Consolas,monospace">data-start</span>/<span style="font-family:Consolas,monospace">data-duration</span> set layer in/out points.</div>
+  </div>
+
+  <div id="tab-preview" class="page">
+    <div class="row">
+      <button id="refreshVp" class="ghost" style="padding:4px 10px">Refresh</button>
+      <label class="chk"><input type="checkbox" id="autoVp" checked><span>Auto (1s)</span></label>
+      <span class="muted" style="margin-left:auto" id="vpInfo"></span>
+    </div>
+    <canvas id="vp" width="640" height="420"></canvas>
+    <div class="hint">Live snapshot of the active comp drawn from real layer data (positions, colors, text). The dashboard shows the same viewport with time scrubbing.</div>
+  </div>
+
   <script src="main.js"></script>
-</body></html>
+</body>
+</html>

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>NEBULA Player — html2ae fidelity test</title>
+<!--
+  ============================================================
+  NEBULA Music Player — animated UI (html2ae fidelity test)
+  ============================================================
+  Comp: 1920 x 1080 @ 30 fps, 10 s
+
+  Every element below is absolutely positioned with explicit px
+  values and uses only features html2ae supports natively:
+    div            -> individual shape/solid/text layer (id = layer name)
+    background     -> solid color / linear / radial gradient (Ramp)
+    border-radius  -> roundness (50% on square = ellipse)
+    border         -> layer stroke
+    box-shadow     -> Drop Shadow effect
+    @keyframes     -> real keyframes:
+                      transform:translate -> Position
+                      transform:scale     -> Scale (+ anchor from transform-origin)
+                      transform:rotate    -> Rotation
+                      opacity             -> Opacity
+                      background-color    -> Fill color
+  Open this file in a browser, then import it in the panel
+  (HTML -> AE tab, "Import file...", Convert -> AE) and compare.
+  ============================================================
+-->
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #0b0e1a; width: 1920px; height: 1080px; overflow: hidden; }
+
+  /* ---------- background stack ---------- */
+  #bg-base   { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px;
+               background: linear-gradient(135deg, #0d1022 0%, #1a1f38 100%); }
+  #glow-violet { position: absolute; left: 1150px; top: -180px; width: 950px; height: 950px;
+                 border-radius: 50%;
+                 background: radial-gradient(circle, rgba(124,77,255,.35), rgba(124,77,255,0) 65%); }
+  #glow-cyan { position: absolute; left: -200px; top: 520px; width: 800px; height: 800px;
+               border-radius: 50%;
+               background: radial-gradient(circle, rgba(34,211,238,.22), rgba(34,211,238,0) 65%); }
+
+  /* ---------- player card (left) ---------- */
+  #card { position: absolute; left: 140px; top: 150px; width: 560px; height: 800px;
+          background: rgba(255,255,255,.045);
+          border: 1px solid rgba(255,255,255,.10);
+          border-radius: 32px;
+          animation: pop .8s ease-out both; }
+
+  #album { position: absolute; left: 210px; top: 220px; width: 420px; height: 420px;
+           border-radius: 28px;
+           background: linear-gradient(135deg, #ff5ca8, #7c4dff);
+           box-shadow: 0 24px 48px rgba(0,0,0,.45);
+           animation: album-in 1s ease-out .3s both; }
+
+  #orbit { position: absolute; left: 560px; top: 180px; width: 110px; height: 110px;
+           border-radius: 24px;
+           background: linear-gradient(135deg, #22d3ee, #7c4dff);
+           box-shadow: 0 12px 28px rgba(34,211,238,.35);
+           animation: spin 10s linear infinite; }
+
+  #title    { position: absolute; left: 210px; top: 664px; width: 420px;
+              font: 700 56px Arial; color: #ffffff;
+              text-align: center; letter-spacing: 6px;
+              animation: fade-up .7s ease-out .55s both; }
+  #subtitle { position: absolute; left: 210px; top: 740px; width: 420px;
+              font: 28px Arial; color: rgba(255,255,255,.55);
+              text-align: center;
+              animation: fade-up .7s ease-out .7s both; }
+
+  #track    { position: absolute; left: 210px; top: 806px; width: 420px; height: 10px;
+              border-radius: 5px; background: rgba(255,255,255,.14);
+              transform-origin: left center;
+              animation: wipe-in .6s ease-out .85s both; }
+  #progress { position: absolute; left: 210px; top: 806px; width: 420px; height: 10px;
+              border-radius: 5px;
+              background: linear-gradient(90deg, #ff5ca8, #22d3ee);
+              transform-origin: left center;
+              animation: wipe-loop 4s linear 1.5s infinite; }
+  #knob     { position: absolute; left: 199px; top: 800px; width: 22px; height: 22px;
+              border-radius: 50%; background: #ffffff;
+              box-shadow: 0 4px 12px rgba(0,0,0,.5);
+              animation: knob-run 4s linear 1.5s infinite; }
+
+  #t-cur { position: absolute; left: 210px; top: 826px; width: 200px;
+           font: 20px Arial; color: rgba(255,255,255,.45); text-align: left; }
+  #t-dur { position: absolute; left: 430px; top: 826px; width: 200px;
+           font: 20px Arial; color: rgba(255,255,255,.45); text-align: right; }
+
+  /* ---------- transport controls ---------- */
+  #btn-prev { position: absolute; left: 236px; top: 872px; width: 64px; height: 64px;
+              border-radius: 50%; background: rgba(255,255,255,.10);
+              animation: pop .5s ease-out .9s both; }
+  #prev-a { position: absolute; left: 262px; top: 895px; width: 6px; height: 18px;
+            border-radius: 3px; background: rgba(255,255,255,.85); }
+  #prev-b { position: absolute; left: 274px; top: 895px; width: 6px; height: 18px;
+            border-radius: 3px; background: rgba(255,255,255,.85); }
+
+  #play { position: absolute; left: 326px; top: 846px; width: 84px; height: 84px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #ff5ca8, #7c4dff);
+          box-shadow: 0 18px 40px rgba(255,92,168,.45);
+          animation: pulse 1.2s ease-in-out infinite; }
+  #pause-a { position: absolute; left: 354px; top: 870px; width: 10px; height: 36px;
+             border-radius: 4px; background: #ffffff; }
+  #pause-b { position: absolute; left: 372px; top: 870px; width: 10px; height: 36px;
+             border-radius: 4px; background: #ffffff; }
+
+  #btn-next { position: absolute; left: 436px; top: 872px; width: 64px; height: 64px;
+              border-radius: 50%; background: rgba(255,255,255,.10);
+              animation: pop .5s ease-out 1s both; }
+  #next-a { position: absolute; left: 458px; top: 895px; width: 6px; height: 18px;
+            border-radius: 3px; background: rgba(255,255,255,.85); }
+  #next-b { position: absolute; left: 470px; top: 895px; width: 6px; height: 18px;
+            border-radius: 3px; background: rgba(255,255,255,.85); }
+
+  /* ---------- queue panel (right) ---------- */
+  #queue { position: absolute; left: 760px; top: 150px; width: 1020px; height: 800px;
+           background: rgba(255,255,255,.03);
+           border: 1px solid rgba(255,255,255,.08);
+           border-radius: 32px;
+           animation: pop .8s ease-out .15s both; }
+
+  #queue-title { position: absolute; left: 820px; top: 210px; width: 400px;
+                 font: 700 26px Arial; color: rgba(255,255,255,.85);
+                 text-align: left; letter-spacing: 4px;
+                 animation: fade-up .6s ease-out .5s both; }
+
+  #badge { position: absolute; left: 1690px; top: 206px; width: 80px; height: 34px;
+           border-radius: 17px; background: #ff4d6d;
+           animation: blink 2s ease-in-out infinite; }
+  #badge-txt { position: absolute; left: 1690px; top: 206px; width: 80px; height: 34px;
+               font: 700 16px Arial; color: #ffffff; text-align: center;
+               line-height: 34px; animation: blink 2s ease-in-out infinite; }
+
+  /* equalizer — 5 bars, staggered */
+  #eq-1, #eq-2, #eq-3, #eq-4, #eq-5 {
+    position: absolute; width: 10px; height: 36px; border-radius: 3px;
+    background: #22d3ee; transform-origin: center bottom;
+    animation: eq .9s ease-in-out infinite alternate; }
+  #eq-1 { left: 1540px; top: 204px; animation-delay: 0s; }
+  #eq-2 { left: 1560px; top: 204px; animation-delay: .12s; }
+  #eq-3 { left: 1580px; top: 204px; animation-delay: .24s; }
+  #eq-4 { left: 1600px; top: 204px; animation-delay: .36s; }
+  #eq-5 { left: 1620px; top: 204px; animation-delay: .48s; }
+
+  /* playlist rows — staggered slide-in from the right */
+  .row { position: absolute; left: 820px; width: 900px; height: 88px;
+         border-radius: 20px; background: rgba(255,255,255,.05);
+         animation: slide-in .6s ease-out both; }
+  #row-1 { top: 290px; background: rgba(124,77,255,.28);
+           border: 1px solid rgba(124,77,255,.55); animation-delay: 1s; }
+  #row-2 { top: 400px; animation-delay: 1.15s; }
+  #row-3 { top: 510px; animation-delay: 1.3s; }
+  #row-4 { top: 620px; animation-delay: 1.45s; }
+
+  .avatar { position: absolute; left: 16px; top: 16px; width: 56px; height: 56px;
+            border-radius: 50%; }
+  #av-1 { background: linear-gradient(135deg, #ff5ca8, #7c4dff); }
+  #av-2 { background: #22d3ee; }
+  #av-3 { background: #f59e0b; }
+  #av-4 { background: #34d399; }
+
+  .rtitle { position: absolute; left: 96px; top: 18px; width: 560px;
+            font: 700 22px Arial; color: #ffffff; text-align: left; }
+  .rartist { position: absolute; left: 96px; top: 50px; width: 560px;
+             font: 18px Arial; color: rgba(255,255,255,.5); text-align: left; }
+  .rdur { position: absolute; left: 780px; top: 33px; width: 100px;
+          font: 18px Arial; color: rgba(255,255,255,.45); text-align: right; }
+
+  /* ---------- floating orbs ---------- */
+  #orb   { position: absolute; left: 1430px; top: -60px; width: 260px; height: 260px;
+           border-radius: 50%;
+           background: radial-gradient(circle, rgba(34,211,238,.5), rgba(34,211,238,0) 70%);
+           animation: bob 5s ease-in-out infinite alternate; }
+  #orb-2 { position: absolute; left: 640px; top: 880px; width: 200px; height: 200px;
+           border-radius: 50%;
+           background: radial-gradient(circle, rgba(255,92,168,.4), rgba(255,92,168,0) 70%);
+           animation: bob 6s ease-in-out 1s infinite alternate; }
+
+  /* ---------- footer ---------- */
+  #footer { position: absolute; left: 140px; top: 984px; width: 900px;
+            font: 18px Arial; color: rgba(255,255,255,.35); text-align: left; }
+
+  /* ---------- keyframes ---------- */
+  @keyframes pop      { 0% { transform: scale(.94); opacity: 0 } 100% { transform: scale(1); opacity: 1 } }
+  @keyframes album-in { 0% { transform: scale(.85); opacity: 0 } 100% { transform: scale(1); opacity: 1 } }
+  @keyframes fade-up  { 0% { transform: translateY(24px); opacity: 0 } 100% { transform: translateY(0); opacity: 1 } }
+  @keyframes slide-in { 0% { transform: translateX(60px); opacity: 0 } 100% { transform: translateX(0); opacity: 1 } }
+  @keyframes wipe-in  { 0% { transform: scaleX(0) } 100% { transform: scaleX(1) } }
+  @keyframes wipe-loop{ 0% { transform: scaleX(0) } 100% { transform: scaleX(1) } }
+  @keyframes knob-run { 0% { transform: translateX(0) } 100% { transform: translateX(420px) } }
+  @keyframes pulse    { 0% { transform: scale(1) } 100% { transform: scale(1.08) } }
+  @keyframes spin     { 0% { transform: rotate(0deg) } 100% { transform: rotate(360deg) } }
+  @keyframes eq       { 0% { transform: scaleY(.35) } 100% { transform: scaleY(1) } }
+  @keyframes bob      { 0% { transform: translateY(0) } 100% { transform: translateY(46px) } }
+  @keyframes blink    { 0% { opacity: 1 } 50% { opacity: .35 } 100% { opacity: 1 } }
+</style>
+</head>
+<body>
+
+  <!-- background stack -->
+  <div id="bg-base"></div>
+  <div id="glow-violet"></div>
+  <div id="glow-cyan"></div>
+
+  <!-- floating orbs -->
+  <div id="orb"></div>
+  <div id="orb-2"></div>
+
+  <!-- player card -->
+  <div id="card"></div>
+  <div id="album"></div>
+  <div id="orbit"></div>
+  <div id="title">NEBULA</div>
+  <div id="subtitle">Midnight Drive - 04:12</div>
+  <div id="track"></div>
+  <div id="progress"></div>
+  <div id="knob"></div>
+  <div id="t-cur">01:24</div>
+  <div id="t-dur">-02:48</div>
+
+  <!-- transport -->
+  <div id="btn-prev"></div>
+  <div id="prev-a"></div>
+  <div id="prev-b"></div>
+  <div id="play"></div>
+  <div id="pause-a"></div>
+  <div id="pause-b"></div>
+  <div id="btn-next"></div>
+  <div id="next-a"></div>
+  <div id="next-b"></div>
+
+  <!-- queue panel -->
+  <div id="queue"></div>
+  <div id="queue-title">UP NEXT</div>
+  <div id="badge"></div>
+  <div id="badge-txt">LIVE</div>
+  <div id="eq-1"></div>
+  <div id="eq-2"></div>
+  <div id="eq-3"></div>
+  <div id="eq-4"></div>
+  <div id="eq-5"></div>
+
+  <div class="row" id="row-1">
+    <div class="avatar" id="av-1"></div>
+    <div class="rtitle">Neon Skyline</div>
+    <div class="rartist">Vaporwave Dreams</div>
+    <div class="rdur">3:56</div>
+  </div>
+  <div class="row" id="row-2">
+    <div class="avatar" id="av-2"></div>
+    <div class="rtitle">Chrome Hearts</div>
+    <div class="rartist">Synth Rider</div>
+    <div class="rdur">4:21</div>
+  </div>
+  <div class="row" id="row-3">
+    <div class="avatar" id="av-3"></div>
+    <div class="rtitle">Afterglow</div>
+    <div class="rartist">Lunar Wave</div>
+    <div class="rdur">3:12</div>
+  </div>
+  <div class="row" id="row-4">
+    <div class="avatar" id="av-4"></div>
+    <div class="rtitle">Starlight Cruise</div>
+    <div class="rartist">Night Drive FM</div>
+    <div class="rdur">5:02</div>
+  </div>
+
+  <div id="footer">html2ae fidelity test - 1920x1080 - 30 fps - 10 s</div>
+
+</body>
+</html>

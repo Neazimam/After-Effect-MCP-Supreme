@@ -2,9 +2,14 @@
 import { z } from 'zod';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { clip, type Hub } from './hub';
+import { convertHtmlToLayers } from './html2ae';
 
 const INSTRUCTIONS = `Controls Adobe After Effects through a live bridge.
 Workflow: ae_get_project -> ae_get_comp -> ae_inspect (discover property paths/matchNames) -> mutate.
+For motion graphics built from HTML/CSS (the fast path): write a self-contained HTML snippet with <style>,
+absolute positioning and @keyframes animations, then call ae_html_to_layers ONCE - it creates real AE layers
+(text/solid/shape) with real keyframes, gradients (Ramp), box-shadows (Drop Shadow) and color animation.
+Call ae_viewport afterwards to see the result as structured data.
 Conventions: layer indexes are 1-based; times are seconds; colors are hex ("#ff3366") or [r,g,b] 0-1 (values >1 are read as 0-255);
 property paths use "/" with display names or matchNames, e.g. "Transform/Position" or "Effects/Gaussian Blur/Blurriness".
 Each tool call is a single undo step in After Effects. ae_execute_script runs arbitrary ExtendScript when no structured tool fits.`;
@@ -19,7 +24,7 @@ const easing = z.enum(['linear', 'hold', 'easeIn', 'easeOut', 'easeInOut']);
 type Opts = { mutating?: boolean; raw?: boolean; timeoutMs?: number };
 
 export function buildServer(hub: Hub): McpServer {
-  const server = new McpServer({ name: 'ae-supreme-mcp', version: '0.1.0' }, { instructions: INSTRUCTIONS });
+  const server = new McpServer({ name: 'ae-supreme-mcp', version: '0.3.6' }, { instructions: INSTRUCTIONS });
 
   const def = (name: string, description: string, shape: Record<string, z.ZodTypeAny>, opts: Opts, run: (a: any) => Promise<unknown>) => {
     (server as any).tool(name, description, shape, async (args: any, extra: any) => {
@@ -33,6 +38,7 @@ export function buildServer(hub: Hub): McpServer {
         if (opts.mutating && hub.settings.readOnly) throw new Error('Read-only mode is ON in the dashboard; this tool would modify the project.');
         const result = await run(args);
         hub.finishTool(entry.id, sid, Date.now() - t0, true, result);
+        if (opts.mutating) hub.requestViewport(); // live viewport sync after every change
         let text = JSON.stringify(result ?? null, null, 2);
         if (text.length > 100_000) text = text.slice(0, 100_000) + '\n... [truncated]';
         return { content: [{ type: 'text', text }] };
@@ -110,6 +116,39 @@ export function buildServer(hub: Hub): McpServer {
   def('ae_render', 'Add a comp to the render queue with an output path. Set start=true to render now (blocks After Effects until done).',
     { comp: compRef, outputPath: z.string(), outputTemplate: z.string().optional(), renderSettings: z.string().optional(), start: z.boolean().optional() },
     { mutating: true, timeoutMs: 3_600_000 }, (a) => call('render', a, { timeoutMs: a.start ? 3_600_000 : 30_000 }));
+
+  def('ae_html_to_layers',
+    'Convert a self-contained HTML+CSS motion graphics snippet into REAL After Effects layers with keyframes. ' +
+    'Each element becomes a layer (text/heading -> text layer; colored div -> solid or shape; border-radius:50% -> ellipse; borders/strokes and gradients -> shape layers with Ramp). ' +
+    'CSS @keyframes animations become AE keyframes: transform:translate -> Position, scale -> Scale, rotate -> Rotation, opacity -> Opacity, background-color/color -> animated Fill; ' +
+    'infinite/iteration counts fill the comp duration; timing functions map to linear/hold/bezier easing; animation-delay shifts keys. ' +
+    'box-shadow / text-shadow -> Drop Shadow effect. Use absolute positioning (left/top in px on a 1920x1080 stage) for precise layout; flexbox centering is also supported. ' +
+    'Returns the created comp and per-layer summary.',
+    {
+      html: z.string().describe('Full HTML snippet including a <style> block with @keyframes animations.'),
+      compName: z.string().optional().describe('Name for the new composition (default "HTML Motion").'),
+      width: z.number().int().positive().optional(), height: z.number().int().positive().optional(),
+      duration: z.number().positive().optional(), frameRate: z.number().positive().optional(),
+      scale: z.number().positive().optional().describe('Multiply all px values (use to fit a larger HTML stage into the comp).'),
+      intoCurrentComp: z.boolean().optional().describe('Add layers into the current comp instead of creating a new one.'),
+      clearComp: z.boolean().optional().describe('With intoCurrentComp: delete existing layers first.'),
+    },
+    { mutating: true, timeoutMs: 120_000 },
+    (a) => {
+      const plan = convertHtmlToLayers(a.html, {
+        width: a.width, height: a.height, duration: a.duration, frameRate: a.frameRate, scale: a.scale,
+        compName: a.compName, createComp: !a.intoCurrentComp,
+      });
+      if (a.intoCurrentComp) plan.createComp = false;
+      return hub.bridge.call({ op: 'call', fn: 'buildLayers', args: plan, undoName: 'MCP: html2ae' }, 120_000)
+        .then((res: any) => ({ ...res, plannedLayers: plan.layers.length, warnings: plan.warnings, comp: res?.comp ?? plan.compName }));
+    });
+
+  def('ae_viewport',
+    'Live snapshot of the active composition for visual verification: per-layer position/size/color/opacity/rotation/text plus comp settings. ' +
+    'Use after building layers to check the result, and to read what the user currently sees.',
+    { comp: compRef },
+    {}, (a) => hub.bridge.call({ op: 'call', fn: 'viewport', args: { comp: a.comp } }, 15_000));
 
   return server;
 }

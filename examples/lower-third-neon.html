@@ -1,0 +1,58 @@
+<!-- ============================================================
+  Example 1: "NEON" lower-third title — paste into the panel's
+  HTML -> AE tab (or send via ae_html_to_layers).
+  1920x1080 stage · 30fps · 8s loop.
+  Every element becomes a real AE layer with real keyframes:
+    .brand  -> text layer, pop-in (Position+Scale+Opacity keys)
+    .rule   -> shape layer, scaleX wipe (Scale keys, bezier)
+    .glow   -> shape with Drop Shadow + Ramp, looping drift (Position/Scale/Opacity keys)
+============================================================= -->
+<style>
+  body { margin: 0; background: #0b0e1a; }
+
+  .brand {
+    position: absolute; left: 260px; top: 720px; width: 900px;
+    font: 800 150px "Arial Black", Arial, sans-serif;
+    color: #6cf2ff; letter-spacing: 10px;
+    text-shadow: 0 0 40px rgba(108, 242, 255, .55);
+    animation: rise 1.4s cubic-bezier(.16, 1, .3, 1) both;
+  }
+
+  .sub {
+    position: absolute; left: 266px; top: 896px; width: 700px;
+    font: 600 40px Arial, sans-serif; color: #aab6d0;
+    letter-spacing: 18px; text-transform: uppercase;
+    animation: fade 1.2s ease-out 0.7s both;
+  }
+
+  .rule {
+    position: absolute; left: 264px; top: 862px; width: 620px; height: 8px;
+    background: linear-gradient(90deg, #6cf2ff, #ff5ca8);
+    transform-origin: left center;
+    animation: wipe 1s cubic-bezier(.2, .8, .2, 1) 0.35s both;
+  }
+
+  .glow {
+    position: absolute; left: -180px; top: 180px; width: 900px; height: 900px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(84, 74, 255, .35), rgba(84, 74, 255, 0) 70%);
+    box-shadow: 0 0 120px rgba(84, 74, 255, .4);
+    animation: drift 7s ease-in-out infinite alternate;
+  }
+
+  @keyframes rise {
+    0%   { transform: translateY(90px) scale(.85); opacity: 0; }
+    100% { transform: translateY(0)    scale(1);   opacity: 1; }
+  }
+  @keyframes fade  { 0% { opacity: 0 } 100% { opacity: 1 } }
+  @keyframes wipe  { 0% { transform: scaleX(0) } 100% { transform: scaleX(1) } }
+  @keyframes drift {
+    0%   { transform: translate(0, 0)      scale(1);   opacity: .8; }
+    100% { transform: translate(340px, 90px) scale(1.15); opacity: 1; }
+  }
+</style>
+
+<div class="glow"></div>
+<div class="brand">NEON</div>
+<div class="rule"></div>
+<div class="sub">motion graphics</div>

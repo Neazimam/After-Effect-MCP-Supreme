@@ -1,16 +1,17 @@
 {
   "name": "ae-supreme-mcp",
-  "version": "0.1.0",
+  "version": "0.3.9",
   "description": "After Effects MCP: WebSocket bridge, live dashboard, raw ExtendScript + structured tools",
   "type": "module",
   "scripts": {
-    "build": "esbuild src/daemon.ts --bundle --platform=node --format=esm --outfile=build/daemon.js --packages=external",
+    "build": "node node_modules/esbuild/bin/esbuild src/daemon.ts --bundle --platform=node --format=esm --outfile=build/daemon.js --packages=external",
     "start": "node build/daemon.js",
     "typecheck": "tsc --noEmit",
     "install-panel": "node scripts/install-panel.mjs",
     "uninstall-panel": "node scripts/install-panel.mjs --uninstall",
     "mock-ae": "node scripts/mock-ae.mjs",
-    "smoke": "node scripts/smoke-test.mjs"
+    "smoke": "node scripts/smoke-test.mjs",
+    "panel-test": "node scripts/panel-api-test.mjs"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.20.0",
@@ -22,5 +23,8 @@
     "@types/ws": "^8.5.12",
     "esbuild": "^0.25.0",
     "typescript": "^5.6.0"
+  },
+  "optionalDependencies": {
+    "@esbuild/win32-x64": "^0.25.12"
   }
 }

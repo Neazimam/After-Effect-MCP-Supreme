@@ -1,2 +1,5 @@
 node_modules/
-build/
+build/*
+!build/daemon.js
+*.log
+.DS_Store

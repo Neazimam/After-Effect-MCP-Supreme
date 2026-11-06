@@ -50,6 +50,12 @@
   .kv { display:grid; grid-template-columns:110px 1fr; gap:6px 10px; font-size:13px } .kv div:nth-child(odd) { color:var(--mut) }
   .switch { display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-top:1px solid var(--line) }
   .switch:first-of-type { border-top:0 } .switch small { color:var(--mut); display:block }
+  #vpWrap { position:relative }
+  #vp { width:100%; border-radius:12px; border:1px solid var(--line); background:#0b0b13; display:block }
+  .vpbar { display:flex; align-items:center; gap:8px; margin-top:10px; flex-wrap:wrap }
+  .vpbar input[type=range] { flex:1; min-width:90px; accent-color:var(--violet) }
+  .vpbar .t { color:var(--mut); font-size:12px; font-variant-numeric:tabular-nums }
+  .vpoff { position:absolute; inset:0; display:grid; place-items:center; color:var(--mut); font-size:13px; background:rgba(9,9,18,.6); border-radius:12px; text-align:center; padding:0 20px }
   .tg { position:relative; width:42px; height:24px; border-radius:99px; background:rgba(255,255,255,.14); cursor:pointer; border:0; flex:none; transition:.2s }
   .tg::after { content:""; position:absolute; top:3px; left:3px; width:18px; height:18px; border-radius:50%; background:#fff; transition:.2s }
   .tg.on { background:var(--grad) } .tg.on::after { left:21px }
@@ -75,6 +81,14 @@
   .detail { grid-column:1/-1; display:grid; grid-template-columns:1fr 1fr; gap:10px; cursor:default }
   .detail h4 { margin:0 0 4px; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--mut) }
   .detail pre { margin:0; max-height:300px; overflow:auto; background:rgba(0,0,0,.4); border:1px solid var(--line); border-radius:10px; padding:10px; font-size:12px; white-space:pre-wrap; word-break:break-word }
+  #hSrc { width:100%; min-height:110px; max-height:260px; background:rgba(0,0,0,.35); border:1px solid var(--line); color:var(--txt); border-radius:10px; padding:8px 10px; font:12px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace; resize:vertical; outline:none }
+  #hSrc:focus { border-color:var(--violet) }
+  .hgrid { display:grid; grid-template-columns:1fr 64px 64px 56px 56px; gap:6px; margin-top:8px }
+  .hgrid label { display:block; color:var(--mut); font-size:10px; text-transform:uppercase; letter-spacing:.08em; margin-bottom:2px }
+  .hgrid input { width:100%; background:rgba(0,0,0,.35); border:1px solid var(--line); color:var(--txt); border-radius:8px; padding:6px 8px; font:inherit; font-size:12px; outline:none }
+  .hgrid input:focus { border-color:var(--violet) }
+  #hMsg { font-size:12px; color:var(--mut); margin-top:8px; max-height:140px; overflow:auto; white-space:pre-wrap }
+  #hPrev { width:100%; height:170px; border:1px solid var(--line); border-radius:10px; background:#fff; margin-top:6px; display:block }
   .toast { position:fixed; right:20px; bottom:20px; background:#15152a; border:1px solid var(--line); padding:10px 14px; border-radius:12px; opacity:0; transform:translateY(8px); transition:.25s; pointer-events:none; font-size:13px; z-index:9 }
   .toast.show { opacity:1; transform:none }
   @media (max-width:1000px) { .grid { grid-template-columns:1fr } .stats { grid-template-columns:repeat(2,1fr) } .detail { grid-template-columns:1fr } .row { grid-template-columns:70px 110px 1fr 70px } .row > :nth-child(5) { display:none } }
@@ -84,7 +98,7 @@
 <div class="wrap">
   <header>
     <div class="logo">Ae</div>
-    <div><h1>After Effect <span>Supreme MCP</span></h1><div class="sub" id="sub">connecting…</div></div>
+    <div><h1>After Effect <span>Supreme MCP</span> <span class="tag" id="vTag" style="vertical-align:2px">v0.3.7</span></h1><div class="sub" id="sub">connecting…</div></div>
     <div class="spacer"></div>
     <div class="pill"><span class="dot" id="dDaemon"></span><span id="tDaemon">Daemon</span></div>
     <div class="pill"><span class="dot" id="dAe"></span><span id="tAe">After Effects</span></div>
@@ -99,6 +113,41 @@
 
   <div class="grid">
     <div class="col">
+      <div class="card"><h2>Live viewport <span style="display:flex;gap:8px;align-items:center"><label style="display:flex;gap:5px;align-items:center;color:var(--mut);font-size:11px;text-transform:none;letter-spacing:0"><input type="checkbox" id="vpAuto" checked style="accent-color:var(--violet)">auto</label><button class="btn" id="btnVp">Refresh</button></span></h2>
+        <div id="vpWrap">
+          <canvas id="vp" width="720" height="405"></canvas>
+          <div class="vpoff" id="vpOff">Waiting for After Effects…<br><small>The viewport syncs live: every AI tool call, panel conversion or AE edit refreshes it.</small></div>
+        </div>
+        <div class="vpbar">
+          <button class="btn" id="btnPlay">▶</button>
+          <input type="range" id="vpTime" min="0" max="10" step="0.0333" value="0">
+          <span class="t" id="vpT">0.00s</span>
+          <span class="t" id="vpInfo"></span>
+        </div>
+      </div>
+      <div class="card" id="hCard"><h2>HTML → AE <span class="tag" id="hState">idle</span></h2>
+        <div class="tools" style="margin-bottom:8px">
+          <button class="btn" id="hImport">Import HTML file…</button>
+          <input type="file" id="hFile" accept=".html,.htm,text/html" style="display:none">
+          <span class="tag" id="hFName">no file loaded</span>
+        </div>
+        <textarea id="hSrc" spellcheck="false" placeholder="Paste an AI-generated HTML+CSS motion snippet here, or click Import HTML file… (drag &amp; drop works too). Every element becomes a real AE layer with keyframes."></textarea>
+        <div class="hgrid">
+          <div><label>Comp name</label><input id="hName" value="HTML Motion"></div>
+          <div><label>W</label><input id="hW" type="number" value="1920"></div>
+          <div><label>H</label><input id="hH" type="number" value="1080"></div>
+          <div><label>FPS</label><input id="hFps" type="number" value="30"></div>
+          <div><label>Secs</label><input id="hDur" type="number" value="10"></div>
+        </div>
+        <label style="display:flex;gap:6px;align-items:center;margin-top:8px;font-size:12px;color:var(--mut)"><input type="checkbox" id="hInto" style="accent-color:var(--violet)">Add layers into the current comp instead of creating a new one</label>
+        <div class="tools" style="margin:10px 0 0">
+          <button class="btn" id="hPlan">Plan</button>
+          <button class="btn pri" id="hApply">Convert → AE</button>
+        </div>
+        <div id="hMsg">Tip: the preview below is the HTML in a real browser — compare it with the AE viewport to check the conversion.</div>
+        <div class="sub" style="margin-top:10px">Browser preview (what the HTML should look like)</div>
+        <iframe id="hPrev" sandbox="" title="HTML preview"></iframe>
+      </div>
       <div class="card"><h2>Connected AIs</h2><div id="clients"></div></div>
       <div class="card"><h2>After Effects <button class="btn" id="btnPing">Ping</button></h2><div class="kv" id="aeKv"></div></div>
       <div class="card"><h2>Safety</h2>
@@ -128,8 +177,8 @@
 
 <script>
 const $ = (id) => document.getElementById(id);
-const S = { entries: new Map(), clients: [], ae: {}, settings: {}, stats: { calls: 0, errors: 0, totalMs: 0 }, startedAt: Date.now(), port: location.port,
-  q: '', client: 'all', status: 'all', system: false, paused: false, open: new Set(), live: false };
+const S = { entries: new Map(), clients: [], ae: {}, settings: {}, stats: { calls: 0, errors: 0, totalMs: 0 }, startedAt: Date.now(), port: location.port, version: '0.3.7',
+  q: '', client: 'all', status: 'all', system: false, paused: false, open: new Set(), live: false, viewport: null, playing: false, playT: 0 };
 const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const BRAND = [[/claude/i, '#ff9a6b'], [/cursor/i, '#8ec5ff'], [/code|copilot|vscode/i, '#5cc8ff'], [/codex|openai|chatgpt/i, '#3ddc97'], [/gemini/i, '#a98bff'], [/windsurf|cascade/i, '#33e0c4'], [/smoke|test|mock/i, '#ffd35c']];
 function colorOf(name = '') { for (const [re, c] of BRAND) if (re.test(name)) return c; let h = 0; for (const ch of name) h = (h * 31 + ch.charCodeAt(0)) % 360; return `hsl(${h} 85% 68%)`; }
@@ -145,7 +194,7 @@ function draw() {
   const ae = S.ae || {}, info = ae.info || {};
   $('dAe').className = 'dot ' + (ae.connected ? (info.app ? 'on' : 'wait') : '');
   $('tAe').textContent = ae.connected ? `${info.app || 'After Effects'} ${info.version || ''}${ae.latencyMs != null ? ' · ' + ae.latencyMs + 'ms' : ''}` : 'After Effects offline';
-  $('sub').textContent = `MCP endpoint http://127.0.0.1:${S.port}/mcp`;
+  $('sub').textContent = `MCP endpoint http://127.0.0.1:${S.port}/mcp · v${S.version}`;
   $('sCalls').textContent = S.stats.calls; $('sErr').textContent = S.stats.errors;
   $('sAvg').textContent = S.stats.calls ? Math.round(S.stats.totalMs / S.stats.calls) + 'ms' : '–';
   const active = S.clients.filter((c) => c.connected).length; $('sAis').textContent = active;
@@ -205,6 +254,129 @@ const post = (u, b) => fetch(u, { method: 'POST', headers: { 'content-type': 'ap
 $('tgRaw').onclick = () => post('/api/settings', { allowRawScripts: !S.settings.allowRawScripts });
 $('tgRO').onclick = () => post('/api/settings', { readOnly: !S.settings.readOnly });
 $('btnPing').onclick = async () => { const r = await post('/api/ping-ae'); toast(r.ok ? `After Effects replied in ${r.ms}ms` : `Ping failed: ${r.error}`); };
+
+// ---- live viewport ----
+const rgba2 = (c, a) => { if (!c || c.length < 3) return `rgba(120,128,150,${a ?? 1})`; const f = (x) => Math.round(Math.max(0, Math.min(1, x)) * 255); return `rgba(${f(c[0])},${f(c[1])},${f(c[2])},${a ?? 1})`; };
+function drawVp() {
+  const cv = $('vp'), vp = S.viewport && S.viewport.data;
+  const off = $('vpOff');
+  off.style.display = vp ? 'none' : 'grid';
+  if (!vp) return;
+  const ctx = cv.getContext('2d'), cw = cv.width, ch = cv.height;
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.fillStyle = '#0b0b13'; ctx.fillRect(0, 0, cw, ch);
+  const k = Math.min((cw - 12) / vp.width, (ch - 12) / vp.height);
+  const ox = (cw - vp.width * k) / 2, oy = (ch + vp.height * k) / 2;
+  const cx0 = ox + (vp.width / 2) * k, cy0 = oy - (vp.height / 2) * k; // comp center = layer origin, y-up
+  ctx.fillStyle = rgba2(vp.bgColor); ctx.fillRect(ox, oy - vp.height * k, vp.width * k, vp.height * k);
+  const layers = vp.layers || [];
+  for (let i = layers.length - 1; i >= 0; i--) {
+    const l = layers[i];
+    let a = (l.opacity === undefined ? 100 : l.opacity) / 100; if (!l.enabled) a *= 0.22;
+    const pos = l.pos || [0, 0], anchor = l.anchor || [0, 0], sc = l.scale || [100, 100];
+    ctx.save(); ctx.globalAlpha = a;
+    ctx.translate(cx0 + pos[0] * k, cy0 - pos[1] * k);
+    // AE rotation is CCW-positive and the canvas here is y-up, so +deg maps directly
+    ctx.rotate((l.rotation || 0) * Math.PI / 180);
+    ctx.scale(k * sc[0] / 100, -k * sc[1] / 100);
+    const col = rgba2(l.color);
+    if (l.type === 'text' && l.text !== undefined) {
+      const fs = Math.max(l.fontSize || 24, 1);
+      ctx.fillStyle = col; ctx.font = fs + 'px ' + (l.font || 'Arial');
+      const just = String(l.justification || '');
+      ctx.textAlign = just.includes('CENTER') ? 'center' : just.includes('RIGHT') ? 'right' : 'left';
+      ctx.textBaseline = 'middle';
+      ctx.save(); ctx.scale(1, -1);
+      const lines = String(l.text).split('\r'), lh = fs * 1.2;
+      const y0 = -(l.top || 0) + (l.h || 0) / 2 - (lines.length - 1) * lh / 2;
+      for (let li = 0; li < lines.length; li++) ctx.fillText(lines[li], 0, y0 + li * lh);
+      ctx.restore();
+    } else if (l.w && l.h) {
+      const an = l.anchor || [0, 0], isSolid = l.type === 'solid';
+      // layer source space is y-down for BOTH kinds (solid: top-left origin 0..w/0..h;
+      // shape: centered around the layer origin, exactly like AE) — convert to the
+      // y-up canvas relative to the anchor point
+      const lx0 = isSolid ? 0 : (l.left === undefined ? -l.w / 2 : l.left);
+      const ly0 = isSolid ? 0 : (l.top === undefined ? -l.h / 2 : l.top);
+      const x0 = lx0 - an[0];
+      const y0 = an[1] - ly0 - l.h; // top edge of the rect in y-up space
+      let fillStyle = col;
+      if (l.gradient) {
+        // Ramp points live in layer source space (y-down, anchor-independent)
+        const gp = (p) => [p[0] - an[0], -(p[1] - an[1])];
+        const s0 = gp(l.gradient.start || [0, 0]), e0 = gp(l.gradient.end || [0, 0]);
+        let gr;
+        if (l.gradient.radial) { const r = Math.hypot(e0[0] - s0[0], e0[1] - s0[1]); gr = ctx.createRadialGradient(s0[0], s0[1], 0, s0[0], s0[1], Math.max(r, 0.01)); }
+        else gr = ctx.createLinearGradient(s0[0], s0[1], e0[0], e0[1]);
+        gr.addColorStop(0, rgba2(l.gradient.c1, l.gradient.a1));
+        gr.addColorStop(1, rgba2(l.gradient.c2, l.gradient.a2 === undefined ? 1 : l.gradient.a2));
+        fillStyle = gr;
+      }
+      if (l.ellipse) { ctx.fillStyle = fillStyle; ctx.beginPath(); ctx.ellipse(x0 + l.w / 2, y0 + l.h / 2, l.w / 2, l.h / 2, 0, 0, Math.PI * 2); ctx.fill(); }
+      else { ctx.fillStyle = fillStyle; ctx.fillRect(x0, y0, l.w, l.h); if (!l.color && !l.gradient) { ctx.strokeStyle = 'rgba(130,140,160,.7)'; ctx.lineWidth = 1 / k; ctx.strokeRect(x0, y0, l.w, l.h); } }
+    }
+    ctx.restore();
+  }
+  $('vpInfo').textContent = `${vp.name} · ${vp.numLayers} layers`;
+  if (!S.playing && !scrubbing) { $('vpTime').max = vp.duration; $('vpTime').value = vp.time; $('vpT').textContent = vp.time.toFixed(2) + 's'; }
+}
+let scrubbing = false, playTimer = null;
+function setTime(t) { post('/api/ae-time', { time: t }); }
+$('vpTime').addEventListener('input', (e) => { scrubbing = true; const t = +e.target.value; $('vpT').textContent = t.toFixed(2) + 's'; setTime(t); clearTimeout(setTime.h); setTime.h = setTimeout(() => scrubbing = false, 500); });
+$('btnPlay').onclick = () => {
+  S.playing = !S.playing; $('btnPlay').textContent = S.playing ? '❚❚' : '▶';
+  clearInterval(playTimer);
+  if (S.playing) {
+    const vp = S.viewport && S.viewport.data; S.playT = vp ? vp.time : 0;
+    const fps = (vp && vp.frameRate) || 30;
+    playTimer = setInterval(() => {
+      const v = S.viewport && S.viewport.data; if (!v) return;
+      S.playT += 1 / 12; if (S.playT > v.duration) S.playT = 0;
+      setTime(Math.round(S.playT * 1000) / 1000);
+      $('vpT').textContent = S.playT.toFixed(2) + 's'; $('vpTime').value = S.playT;
+    }, 1000 / 12);
+  }
+};
+$('btnVp').onclick = () => post('/api/viewport', {});
+setInterval(() => { if ($('vpAuto').checked && !S.playing) post('/api/viewport', {}); }, 5000); // catches manual AE edits
+
+// ---- HTML → AE ----
+const hOpts = () => ({ compName: $('hName').value.trim() || 'HTML Motion', width: +$('hW').value || 1920, height: +$('hH').value || 1080, frameRate: +$('hFps').value || 30, duration: +$('hDur').value || 10, createComp: !$('hInto').checked });
+let hPrevTimer = 0;
+function hPreview() { clearTimeout(hPrevTimer); hPrevTimer = setTimeout(() => { $('hPrev').srcdoc = $('hSrc').value; }, 400); }
+$('hSrc').addEventListener('input', hPreview);
+function hLoadText(txt, name) { $('hSrc').value = txt; $('hFName').textContent = name || 'pasted HTML'; hPreview(); }
+function hMsg(text, isErr) { const el = $('hMsg'); el.textContent = text; el.style.color = isErr ? 'var(--err)' : 'var(--mut)'; }
+function hReadFile(f) { if (!f) return; const r = new FileReader(); r.onload = () => hLoadText(String(r.result), f.name); r.readAsText(f); }
+$('hImport').onclick = () => $('hFile').click();
+$('hFile').onchange = (e) => { hReadFile(e.target.files && e.target.files[0]); e.target.value = ''; };
+const hCard = $('hCard');
+['dragover', 'dragenter'].forEach((t) => hCard.addEventListener(t, (e) => { e.preventDefault(); hCard.style.outline = '1px dashed var(--violet)'; }));
+['dragleave', 'drop'].forEach((t) => hCard.addEventListener(t, (e) => { e.preventDefault(); if (t === 'dragleave' && e.relatedTarget && hCard.contains(e.relatedTarget)) return; hCard.style.outline = ''; }));
+hCard.addEventListener('drop', (e) => { const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]; if (f) { if (!/\.(html?|txt)$/i.test(f.name)) return toast('Drop an .html file'); hReadFile(f); } });
+$('hPlan').onclick = async () => {
+  const html = $('hSrc').value; if (!html.trim()) return toast('Paste or import HTML first');
+  $('hState').textContent = 'planning…';
+  const r = await post('/api/html2ae', { html, options: hOpts() });
+  if (!r.ok) { $('hState').textContent = 'error'; return hMsg('Plan failed: ' + r.error, true); }
+  $('hState').textContent = `${r.layers} layers`;
+  hMsg(`Plan: ${r.layers} layers, ${r.keyframes} keyframes → "${r.compName}" ${r.width}x${r.height} @ ${r.frameRate}fps ${r.duration}s` +
+    (r.layerNames && r.layerNames.length ? '\n' + r.layerNames.map((n, i) => `${i + 1}. ${n}`).join('\n') : '') +
+    (r.warnings && r.warnings.length ? '\n⚠ ' + r.warnings.join('\n⚠ ') : ''));
+};
+$('hApply').onclick = async () => {
+  const html = $('hSrc').value; if (!html.trim()) return toast('Paste or import HTML first');
+  $('hApply').disabled = true; $('hState').textContent = 'converting…';
+  const r = await post('/api/html2ae-apply', { html, options: hOpts() });
+  $('hApply').disabled = false;
+  if (!r.ok) { $('hState').textContent = 'error'; return hMsg('Convert failed: ' + r.error, true); }
+  $('hState').textContent = `${r.plannedLayers} layers`;
+  hMsg(`✓ ${r.plannedLayers} layers, ${r.keyframes} keyframes in "${r.comp}" (one undo step)` +
+    (r.effects && r.effects.length ? `\nfx: ${r.effects.join(', ')}` : '') +
+    (r.warnings && r.warnings.length ? `\n⚠ ${r.warnings.join('\n⚠ ')}` : ''));
+  toast(`HTML → AE: ${r.plannedLayers} layers created`);
+  post('/api/viewport', {});
+};
 const url = `http://127.0.0.1:${location.port}/mcp`;
 $('snip1').textContent = `claude mcp add --transport http after-effects ${url}`;
 $('snip2').textContent = JSON.stringify({ mcpServers: { 'after-effects': { url } } }, null, 2);
@@ -217,14 +389,16 @@ function connect() {
   ws.onclose = () => { S.live = false; render(); setTimeout(connect, 1200); };
   ws.onmessage = (ev) => {
     const m = JSON.parse(ev.data);
-    if (m.type === 'snapshot') { Object.assign(S, { clients: m.clients, ae: m.ae, settings: m.settings, stats: m.stats, startedAt: m.startedAt, port: m.port }); S.entries = new Map(m.entries.map((e) => [e.id, e])); }
+    if (m.type === 'snapshot') { Object.assign(S, { clients: m.clients, ae: m.ae, settings: m.settings, stats: m.stats, startedAt: m.startedAt, port: m.port }); if (m.version) S.version = m.version; $('vTag').textContent = 'v' + S.version; S.entries = new Map(m.entries.map((e) => [e.id, e])); if (m.viewport) S.viewport = m.viewport; }
+    else if (m.type === 'viewport') { S.viewport = m.viewport; drawVp(); }
     else if (m.type === 'entry') { S.entries.set(m.entry.id, m.entry); if (S.entries.size > 2000) S.entries.delete(S.entries.keys().next().value); }
     else if (m.type === 'update') { const e = S.entries.get(m.id); if (e) Object.assign(e, m.patch); }
     else if (m.type === 'clients') S.clients = m.clients;
     else if (m.type === 'ae') S.ae = m.ae;
     else if (m.type === 'settings') S.settings = m.settings;
     else if (m.type === 'stats') S.stats = m.stats;
-    render();
+    if (m.type !== 'viewport') render();
+    if (m.type === 'viewport') drawVp();
   };
 }
 connect(); setInterval(render, 1000);
